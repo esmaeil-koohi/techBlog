@@ -13,28 +13,30 @@ import 'package:tec/view/register/register_intro.dart';
 class RegisterController extends GetxController {
   TextEditingController emailTextEditingController = TextEditingController();
   TextEditingController activeCodeTextEditingController = TextEditingController();
-  String email = '';
-  String userId = '';
+  var email = '';
+  int userId = 0;
 
   register() async {
     Map<String, dynamic> map = {
       'email': emailTextEditingController.text.trim(),
       'command': 'register'
     };
-    var response = await DioService().postMethod(map, ApiConstant.postRegister);
-    email = emailTextEditingController.text.trim();
+    var response = await DioService().postMethod(map, ApiUrlConstant.postRegister);
+    debugPrint('de'+response.toString());
+    email = emailTextEditingController.text.toString().trim();
     userId = response.data['user_id'];
+
   }
 
   verify() async {
     Map<String, dynamic> map = {
       'email': email,
       'user_id': userId,
-      'code': activeCodeTextEditingController.text.trim(),
+      'code': activeCodeTextEditingController.text.toString().trim(),
       'command': 'verify'
     };
-
-    var response = await DioService().postMethod(map, ApiConstant.postRegister);
+    debugPrint(map.toString());
+    var response = await DioService().postMethod(map, ApiUrlConstant.postRegister);
     var status = response.data['response'];
     switch (status) {
       case 'verified':

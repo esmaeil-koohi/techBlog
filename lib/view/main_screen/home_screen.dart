@@ -6,6 +6,7 @@ import 'package:get/get.dart';
 import 'package:tec/controller/home_screen_controller.dart';
 import 'package:tec/controller/article/single_article_controller.dart';
 import 'package:tec/model/fake_data.dart';
+import 'package:tec/named_route.dart';
 import 'package:tec/view/article/article_list_screen.dart';
 import '../../constant/my_colors.dart';
 import '../../component/my_componenet.dart';
@@ -169,44 +170,51 @@ class HomeScreen extends StatelessWidget {
             itemCount: homeScreenController.topPodcasts.length,
             scrollDirection: Axis.horizontal,
             itemBuilder: (context, index) {
-              return Padding(
-                padding: EdgeInsets.only(right: index == 0 ? bodyMargin : 15),
-                child: Column(
-                  children: [
-                    SizedBox(
-                      height: size.height / 5.3,
-                      width: size.width / 2.4,
-                      child: CachedNetworkImage(
-                        imageUrl:
-                            homeScreenController.topPodcasts[index].poster!,
-                        imageBuilder: (context, imageProvider) {
-                          return Container(
-                            decoration: BoxDecoration(
-                                borderRadius:
-                                    BorderRadius.all(Radius.circular(16)),
-                                image: DecorationImage(
-                                  image: imageProvider,
-                                  fit: BoxFit.cover,
-                                )),
-                          );
-                        },
-                        placeholder: (context, url) => Loading(),
-                        errorWidget: (context, url, error) => Icon(
-                          Icons.image_not_supported_outlined,
-                          size: 50,
-                          color: Colors.grey,
+              return GestureDetector(
+                onTap: () {
+                  Get.toNamed(
+                      NamedRouted.routeSinglePodcast,
+                      arguments: homeScreenController.topPodcasts[index]);
+                },
+                child: Padding(
+                  padding: EdgeInsets.only(right: index == 0 ? bodyMargin : 15),
+                  child: Column(
+                    children: [
+                      SizedBox(
+                        height: size.height / 5.3,
+                        width: size.width / 2.4,
+                        child: CachedNetworkImage(
+                          imageUrl:
+                              homeScreenController.topPodcasts[index].poster!,
+                          imageBuilder: (context, imageProvider) {
+                            return Container(
+                              decoration: BoxDecoration(
+                                  borderRadius:
+                                      BorderRadius.all(Radius.circular(16)),
+                                  image: DecorationImage(
+                                    image: imageProvider,
+                                    fit: BoxFit.cover,
+                                  )),
+                            );
+                          },
+                          placeholder: (context, url) => Loading(),
+                          errorWidget: (context, url, error) => Icon(
+                            Icons.image_not_supported_outlined,
+                            size: 50,
+                            color: Colors.grey,
+                          ),
                         ),
                       ),
-                    ),
-                    SizedBox(
-                      height: size.width / 2.4,
-                      child: Text(
-                        homeScreenController.topPodcasts[index].title!,
-                        overflow: TextOverflow.ellipsis,
-                        maxLines: 2,
+                      SizedBox(
+                        height: size.width / 2.4,
+                        child: Text(
+                          homeScreenController.topPodcasts[index].title!,
+                          overflow: TextOverflow.ellipsis,
+                          maxLines: 2,
+                        ),
                       ),
-                    ),
-                  ],
+                    ],
+                  ),
                 ),
               );
             }),

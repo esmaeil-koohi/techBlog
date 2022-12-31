@@ -219,8 +219,7 @@ class Single extends StatelessWidget {
     return GestureDetector(
       onTap: () {
         singleArticleController.getArticleInfo(
-            singleArticleController.getArticleInfo(
-                int.parse(singleArticleController.relatedList[index].id!)));
+            singleArticleController.getArticleInfo(int.parse(singleArticleController.relatedList[index].id!)));
       },
       child: Padding(
         padding: EdgeInsets.only(right: index == 0 ? sizeWith / 10 : 15),

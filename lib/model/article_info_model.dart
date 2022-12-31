@@ -31,7 +31,7 @@ class ArticleInfoModel {
     id = element['info']['id'];
     title = element['info']['title'];
     content = element['info']['content'];
-    image = ApiConstant.hostDlUrl + element['info']['image'];
+    image = ApiUrlConstant.hostDlUrl + element['info']['image'];
     catId = element['info']['cat_id'];
     catName = element['info']['cat_name'];
     author = element['info']['author'];

@@ -9,6 +9,7 @@ import 'package:tec/view/article/manage_article.dart';
 import 'package:tec/view/article/single_manage_article.dart';
 import 'package:tec/view/main_screen/main_screen.dart';
 import 'package:tec/view/article/single.dart';
+import 'package:tec/view/podcast/single_podcast.dart';
 import 'package:tec/view/splash_screen.dart';
 import 'constant/my_colors.dart';
 import 'my_http_override.dart';
@@ -52,6 +53,10 @@ class MyApp extends StatelessWidget {
             name: NamedRouted.routeSingleManageArticle,
             page:()=> SingleManageArticle(),
             binding: ArticleManagerBinding(),
+        ),
+        GetPage(
+          name: NamedRouted.routeSinglePodcast,
+          page:()=> SinglePodcast(),
         ),
       ],
       title: 'Localizations Sample App',
@@ -106,7 +111,8 @@ class MyApp extends StatelessWidget {
   }
 
   ElevatedButtonThemeData buttonStyle() {
-    return ElevatedButtonThemeData(style: ButtonStyle(textStyle: MaterialStateProperty.resolveWith(
+    return ElevatedButtonThemeData(
+      style: ButtonStyle(textStyle: MaterialStateProperty.resolveWith(
                 (states) {
                   if (states.contains(MaterialState.pressed)) {
                     return const TextStyle(fontSize: 25);

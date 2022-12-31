@@ -6,11 +6,9 @@ import 'package:get/get.dart';
 import 'package:tec/component/dimens.dart';
 import 'package:tec/constant/my_colors.dart';
 import 'package:tec/component/my_componenet.dart';
-import 'package:tec/controller/article/list_article_controller.dart';
 import 'package:tec/controller/article/manage_article_controller.dart';
 import 'package:tec/services/pick_file.dart';
 import 'package:tec/view/article/article_content_editor.dart';
-import 'package:tec/view/article/article_list_screen.dart';
 import '../../controller/article/file_controller.dart';
 import '../../controller/home_screen_controller.dart';
 
@@ -78,6 +76,14 @@ class SingleManageArticle extends StatelessWidget {
         text(textThem),
         SizedBox(height: Dimens.bodyMargin),
         seeMoreChooseCategory(textThem),
+        selectedCategory(textThem),
+        ElevatedButton(onPressed: () async {
+        await manageArticleController.storeArticle();
+        }, child:Text(
+          manageArticleController.loading.value ?
+          'صبر کنید ...':
+            'ارسال مطلب',
+        ))
       ],
     );
   }
@@ -93,13 +99,11 @@ class SingleManageArticle extends StatelessWidget {
           scrollDirection: Axis.vertical,
           itemBuilder: (context, index) => GestureDetector(
             onTap: () async {
-              String tagId = homeScreenController.tagsList[index].id!;
-              await Get.find<ListArticleController>()
-                  .getArticleListWithTagId(tagId);
-              String tagName = homeScreenController.tagsList[index].title!;
-              Get.to(ArticleListScreen(
-                title: tagName,
-              ));
+              manageArticleController.articleInfoModel.update((val) {
+                val?.catId = homeScreenController.tagsList[index].id!;
+                val?.catName = homeScreenController.tagsList[index].title!;
+              });
+              Get.back();
             },
             child: Padding(
               padding: const EdgeInsets.only(left: 8.0),
@@ -129,6 +133,19 @@ class SingleManageArticle extends StatelessWidget {
       ),
     );
   }
+
+  Widget selectedCategory(TextTheme textThem) {
+    return Padding(
+      padding:  EdgeInsets.only(right: Dimens.halfBodyMargin),
+      child: Text(
+        manageArticleController.articleInfoModel.value.catName == null ?
+        ' هنوز هیچ دسته بندی انتخاب نشده' : manageArticleController.articleInfoModel.value.catName!,
+        maxLines: 2,
+        style: textThem.titleLarge,
+      ),
+    );
+  }
+
 
   chooseCatsBottomSheet(TextTheme textTheme){
     Get.bottomSheet(

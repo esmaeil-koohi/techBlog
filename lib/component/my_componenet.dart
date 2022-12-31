@@ -53,7 +53,6 @@ class MainTags extends StatelessWidget {
               AssetImage('assets/icons/hashtag.png'),
               color: Colors.white,
               size: 16,
-              //ImageIcon(Assets.icons.hashtag.png),
             ),
             SizedBox(
               width: 6.0,

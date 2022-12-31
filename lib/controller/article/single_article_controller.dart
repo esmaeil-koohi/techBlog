@@ -15,11 +15,11 @@ class SingleArticleController extends GetxController {
 
    getArticleInfo(int id) async {
      articleInfoModel = ArticleInfoModel().obs;
-     Get.to( Single());
+     Get.to(Single());
      loading.value = true;
      //ToDo userid is hard code
      String userId = '';
-     var response = await DioService().getMethod(ApiConstant.baseUrl+'article/get.php?command=info&id=$id&user_id=$userId');
+     var response = await DioService().getMethod(ApiUrlConstant.baseUrl+'article/get.php?command=info&id=$id&user_id=$userId');
      if (response.statusCode == 200) {
       articleInfoModel.value = ArticleInfoModel.fromJson(response.data);
       loading.value = false;
