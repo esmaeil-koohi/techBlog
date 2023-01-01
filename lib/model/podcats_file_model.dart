@@ -1,3 +1,5 @@
+import 'package:tec/constant/api_constant.dart';
+
 class PodcastsFileModel{
   String? id;
   String? podcastsId;
@@ -9,7 +11,7 @@ class PodcastsFileModel{
   PodcastsFileModel.fromJson(Map<String, dynamic> element){
     id = element['id'];
     podcastsId = element['podcast_id'];
-    file = element['file'];
+    file = ApiUrlConstant.hostDlUrl + element['file'];
     title = element['title'];
     length = element['length'];
   }

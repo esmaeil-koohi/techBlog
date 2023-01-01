@@ -42,7 +42,7 @@ packages:
       name: audio_session
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "0.1.10"
+    version: "0.1.13"
   boolean_selector:
     dependency: transitive
     description:
@@ -589,12 +589,12 @@ packages:
     source: hosted
     version: "4.7.0"
   just_audio:
-    dependency: transitive
+    dependency: "direct main"
     description:
       name: just_audio
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "0.9.29"
+    version: "0.9.31"
   just_audio_platform_interface:
     dependency: transitive
     description:

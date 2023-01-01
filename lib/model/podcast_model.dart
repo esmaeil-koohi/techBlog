@@ -22,7 +22,7 @@ class PodcastModel {
       id = element["id"];
       title = element["title"];      
       poster =ApiUrlConstant.hostDlUrl + element["poster"];
-      publisher = element["publisher"];
+      publisher = element["author"];
       view = element["view"];
       creatAt = element["created_at"];
   }

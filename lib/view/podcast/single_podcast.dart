@@ -14,13 +14,12 @@ class SinglePodcast extends StatelessWidget {
   late SinglePodcastController singlePodcastController;
   late PodcastModel podcastModel ;
   SinglePodcast(){
-    podcastModel.id = Get.arguments;
+    podcastModel = Get.arguments;
     singlePodcastController = Get.put(SinglePodcastController(id: podcastModel.id));
   }
 
   @override
   Widget build(BuildContext context) {
-    print(singlePodcastController.id);
     var textThem = Theme.of(context).textTheme;
     return SafeArea(
         child: Scaffold(
@@ -39,52 +38,62 @@ class SinglePodcast extends StatelessWidget {
             ],
           ),
         ),
-        Positioned(
-            bottom: 8.0,
-            left: Dimens.bodyMargin,
-            right: Dimens.bodyMargin,
-            child: Container(
-              height: Get.height / 7,
-              child: Padding(
-                padding: const EdgeInsets.all(8.0),
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.spaceAround,
-                  children: [
-                    LinearPercentIndicator(
-                      percent: 1.0,
-                      backgroundColor: Colors.white,
-                      progressColor: Colors.orange,
-                    ),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceAround,
-                      children: [
-                        IconButton(
-                            onPressed: () {},
-                            icon:Icon(Icons.skip_next,color: Colors.white, size:45,)
-                        ),
-                        IconButton(
-                            onPressed: () {},
-                            icon:Icon( Icons.play_circle_fill,
-                              color: Colors.white,size:45,)
-                        ),
-                        IconButton(
-                            onPressed: () {},
-                            icon:Icon(    Icons.skip_previous,
-                              color: Colors.white,size:45,)
-                        ),
-                        SizedBox(),
-                        IconButton(
-                            onPressed: () {},
-                            icon:Icon(Icons.repeat,
-                              color: Colors.yellow,size:45,)
-                        ),
-                      ],
-                    )
-                  ],
+        Obx(
+              ()=> Positioned(
+              bottom: 8.0,
+              left: Dimens.bodyMargin,
+              right: Dimens.bodyMargin,
+              child: Container(
+                height: Get.height / 7,
+                child: Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.spaceAround,
+                    children: [
+                      LinearPercentIndicator(
+                        percent: 1.0,
+                        backgroundColor: Colors.white,
+                        progressColor: Colors.orange,
+                      ),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceAround,
+                        children: [
+                          IconButton(
+                              onPressed: () async => await singlePodcastController.player.seekToNext(),
+                              icon:Icon(Icons.skip_next,color: Colors.white, size:42,)
+                          ),
+                          IconButton(
+                              onPressed: () {
+                                singlePodcastController.player.playing?
+                                singlePodcastController.player.pause():
+                                singlePodcastController.player.play();
+                                singlePodcastController.playState.value = singlePodcastController.player.playing;
+                              },
+                              icon:Icon(
+                                singlePodcastController.playState.value ?
+                                Icons.pause_circle_filled:
+                                Icons.play_circle_fill,
+                                color: Colors.white,size:45,)
+                          ),
+                          IconButton(
+                              onPressed: () async => await singlePodcastController.player.seekToPrevious(),
+                              icon:Icon(    Icons.skip_previous,
+                                color: Colors.white,size:42,)
+                          ),
+                          SizedBox(),
+                          IconButton(
+                              onPressed: () {},
+                              icon:Icon(Icons.repeat,
+                                color: Colors.yellow,size:35,)
+                          ),
+                        ],
+                      )
+                    ],
+                  ),
                 ),
-              ),
-              decoration: MyDecorations.mainGradiant,
-            ))
+                decoration: MyDecorations.mainGradiant,
+              )),
+        )
       ],
     )));
   }
@@ -92,31 +101,36 @@ class SinglePodcast extends StatelessWidget {
   Widget podcastsList(TextTheme textThem) {
     return Padding(
       padding: const EdgeInsets.all(8.0),
-      child: ListView.builder(
-        shrinkWrap: true,
-        itemCount: 5,
-        itemBuilder: (context, index) {
-          return Padding(
-            padding: const EdgeInsets.all(8.0),
-            child: Row(
-              children: [
-                ImageIcon(
-                  AssetImage('assets/icons/voice.png'),
-                  color: SolidColors.seeMore,
-                ),
-                SizedBox(
-                  width: 8,
-                ),
-                Text(
-                  'بخش چهارم : فریلنسر دیوانه',
-                  style: textThem.headline4,
-                ),
-                Expanded(child: SizedBox.shrink()),
-                Text('22:00'),
-              ],
-            ),
-          );
-        },
+      child: Obx(
+        ()=> ListView.builder(
+          shrinkWrap: true,
+          itemCount: singlePodcastController.podcastFileList.length,
+          itemBuilder: (context, index) {
+            return Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: Row(
+                children: [
+                  ImageIcon(
+                    AssetImage('assets/icons/voice.png'),
+                    color: SolidColors.seeMore,
+                  ),
+                  SizedBox(
+                    width: 8,
+                  ),
+                  SizedBox(
+                    width: Get.width/1.5,
+                    child: Text(
+                      singlePodcastController.podcastFileList[index].title!,
+                      style: textThem.headline4,
+                    ),
+                  ),
+                  Expanded(child: SizedBox.shrink()),
+                  Text(singlePodcastController.podcastFileList[index].length!+':00'),
+                ],
+              ),
+            );
+          },
+        ),
       ),
     );
   }
@@ -173,13 +187,16 @@ class SinglePodcast extends StatelessWidget {
   }
 
   Widget imagePoster() {
-    return CachedNetworkImage(
-        imageUrl:
-            'https://onlinejpgtools.com/images/examples-onlinejpgtools/mountains-near-water-better-quality.jpg',
-        imageBuilder: (context, imageProvider) => Image(image: imageProvider),
-        placeholder: (context, url) => Loading(),
-        errorWidget: (context, url, error) =>
-            Image.asset('assets/images/single_place_holder.jpg'));
+    return SizedBox(
+      width: Get.width,
+      height: Get.height / 3,
+      child: CachedNetworkImage(
+          imageUrl:podcastModel.poster!,
+          imageBuilder: (context, imageProvider) => Image(image: imageProvider,fit: BoxFit.fill,),
+          placeholder: (context, url) => Loading(),
+          errorWidget: (context, url, error) =>
+              Image.asset('assets/images/single_place_holder.jpg')),
+    );
   }
 
   Widget informationUser(TextTheme textThem) {
@@ -193,7 +210,7 @@ class SinglePodcast extends StatelessWidget {
           width: 15,
         ),
         Text(
-          'اسماعیل کوهی',
+          podcastModel.publisher!,
           style: textThem.headline4,
         ),
         SizedBox(
@@ -209,7 +226,7 @@ class SinglePodcast extends StatelessWidget {
       child: Align(
         alignment: Alignment.centerRight,
         child: Text(
-          'عنوان مقاله',
+          podcastModel.title!,
           maxLines: 2,
           style: textThem.titleLarge,
         ),
