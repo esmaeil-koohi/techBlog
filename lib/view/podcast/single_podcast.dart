@@ -1,7 +1,7 @@
+import 'package:audio_video_progress_bar/audio_video_progress_bar.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:percent_indicator/linear_percent_indicator.dart';
 import 'package:tec/component/decoration.dart';
 import 'package:tec/component/dimens.dart';
 import 'package:tec/component/my_componenet.dart';
@@ -46,45 +46,71 @@ class SinglePodcast extends StatelessWidget {
               child: Container(
                 height: Get.height / 7,
                 child: Padding(
-                  padding: const EdgeInsets.all(8.0),
+                  padding: const EdgeInsets.all(10.0),
                   child: Column(
                     mainAxisAlignment: MainAxisAlignment.spaceAround,
                     children: [
-                      LinearPercentIndicator(
-                        percent: 1.0,
-                        backgroundColor: Colors.white,
-                        progressColor: Colors.orange,
-                      ),
+                     ProgressBar(
+                         timeLabelTextStyle: TextStyle(color: Colors.white),
+                          thumbColor: Colors.yellow,
+                          baseBarColor: Colors.white,
+                          progressBarColor: Colors.orange,
+                          buffered: singlePodcastController.bufferedValue.value,
+                          progress: singlePodcastController.progressValue.value,
+                          total: singlePodcastController.player.duration?? Duration(seconds: 0),
+                         onSeek:(position) {
+                           singlePodcastController.player.seek(position);
+                           singlePodcastController.player.playing?
+                           singlePodcastController.startProgress():singlePodcastController.timer!.cancel();
+                         },
+                     ),
                       Row(
                         mainAxisAlignment: MainAxisAlignment.spaceAround,
                         children: [
                           IconButton(
-                              onPressed: () async => await singlePodcastController.player.seekToNext(),
-                              icon:Icon(Icons.skip_next,color: Colors.white, size:42,)
+                              onPressed: () async {
+                                await singlePodcastController.player.seekToNext();
+                                singlePodcastController.currentFileIndex.value = singlePodcastController.player.currentIndex!;
+                              } ,
+                              icon:Icon(Icons.skip_next,color: Colors.white, size:40,)
                           ),
                           IconButton(
                               onPressed: () {
                                 singlePodcastController.player.playing?
+                                singlePodcastController.timer!.cancel():
+                                singlePodcastController.startProgress();
+
+
+                                singlePodcastController.player.playing?
                                 singlePodcastController.player.pause():
                                 singlePodcastController.player.play();
+                                singlePodcastController.startProgress();
                                 singlePodcastController.playState.value = singlePodcastController.player.playing;
+                                singlePodcastController.currentFileIndex.value = singlePodcastController.player.currentIndex!;
                               },
                               icon:Icon(
                                 singlePodcastController.playState.value ?
                                 Icons.pause_circle_filled:
                                 Icons.play_circle_fill,
-                                color: Colors.white,size:45,)
+                                color: Colors.white,size:40,)
                           ),
                           IconButton(
-                              onPressed: () async => await singlePodcastController.player.seekToPrevious(),
+                              onPressed: () async {
+                                await singlePodcastController.player.seekToPrevious();
+                                singlePodcastController.currentFileIndex.value = singlePodcastController.player.currentIndex!;
+                              },
                               icon:Icon(    Icons.skip_previous,
-                                color: Colors.white,size:42,)
+                                color: Colors.white,size:40,)
                           ),
                           SizedBox(),
-                          IconButton(
-                              onPressed: () {},
-                              icon:Icon(Icons.repeat,
-                                color: Colors.yellow,size:35,)
+                          Obx(
+                              ()=> IconButton(
+                                onPressed: () {
+                                singlePodcastController.setLoopMode();
+                                },
+                                icon:Icon(Icons.repeat,
+                                  color:singlePodcastController.isLoopAll.value? Colors.blue : Colors.white,size:30,)
+                            ),
                           ),
                         ],
                       )
@@ -106,27 +132,38 @@ class SinglePodcast extends StatelessWidget {
           shrinkWrap: true,
           itemCount: singlePodcastController.podcastFileList.length,
           itemBuilder: (context, index) {
-            return Padding(
-              padding: const EdgeInsets.all(8.0),
-              child: Row(
-                children: [
-                  ImageIcon(
-                    AssetImage('assets/icons/voice.png'),
-                    color: SolidColors.seeMore,
-                  ),
-                  SizedBox(
-                    width: 8,
-                  ),
-                  SizedBox(
-                    width: Get.width/1.5,
-                    child: Text(
-                      singlePodcastController.podcastFileList[index].title!,
-                      style: textThem.headline4,
+            return GestureDetector(
+              onTap: () async {
+                await singlePodcastController.player.seek(Duration.zero, index: index);
+                singlePodcastController.currentFileIndex.value = singlePodcastController.player.currentIndex!;
+                singlePodcastController.player.play();
+                singlePodcastController.playState.value = singlePodcastController.player.playing;
+                singlePodcastController.startProgress();
+              },
+              child: Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: Row(
+                  children: [
+                    ImageIcon(
+                      AssetImage('assets/icons/voice.png'),
+                      color: SolidColors.seeMore,
                     ),
-                  ),
-                  Expanded(child: SizedBox.shrink()),
-                  Text(singlePodcastController.podcastFileList[index].length!+':00'),
-                ],
+                    SizedBox(
+                      width: 8,
+                    ),
+                    SizedBox(
+                      width: Get.width/1.5,
+                      child: Obx(
+                        ()=> Text(
+                          singlePodcastController.podcastFileList[index].title!,
+                          style: singlePodcastController.currentFileIndex.value == index ? textThem.headline3 : textThem.headline4,
+                        ),
+                      ),
+                    ),
+                    Expanded(child: SizedBox.shrink()),
+                    Text(singlePodcastController.podcastFileList[index].length!+':00'),
+                  ],
+                ),
               ),
             );
           },
