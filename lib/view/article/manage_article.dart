@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:tec/component/my_componenet.dart';
 import 'package:tec/controller/article/manage_article_controller.dart';
-import 'package:tec/named_route.dart';
+import 'package:tec/route_manager/named_route.dart';
 import '../../constant/my_strings.dart';
 
 class ManageArticle extends StatelessWidget {

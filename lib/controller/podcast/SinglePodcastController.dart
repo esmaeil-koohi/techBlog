@@ -54,6 +54,7 @@ class SinglePodcastController extends GetxController{
     }
     timer = Timer.periodic(tick, (timer) {
       duration --;
+      print('durationTest : $duration ==> currentIndexTest : ${player.currentIndex}');
       progressValue.value = player.position;
       bufferedValue.value = player.bufferedPosition;
       if(duration <= 0 ){
@@ -63,6 +64,12 @@ class SinglePodcastController extends GetxController{
       }
     });
 
+  }
+
+  checkTheResetTimer(){
+    if(player.playing){
+      startProgress();
+    }
   }
 
   setLoopMode(){

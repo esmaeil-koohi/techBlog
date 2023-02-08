@@ -6,5 +6,6 @@ class NamedRouted {
   static const String routeManageArticle = '/ManageArticle';
   static const String routeSingleManageArticle = '/SingleManageArticle';
   static const String routeSinglePodcast = '/SinglePodcast';
+  static const String initialRoute = '/';
 
 }

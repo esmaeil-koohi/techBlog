@@ -5,7 +5,7 @@ import 'package:get/get.dart';
 import 'package:get_storage/get_storage.dart';
 import 'package:tec/constant/api_constant.dart';
 import 'package:tec/constant/storage_const.dart';
-import 'package:tec/named_route.dart';
+import 'package:tec/route_manager/named_route.dart';
 import 'package:tec/services/dio_service.dart';
 import 'package:tec/view/main_screen/main_screen.dart';
 import 'package:tec/view/register/register_intro.dart';
@@ -14,7 +14,7 @@ class RegisterController extends GetxController {
   TextEditingController emailTextEditingController = TextEditingController();
   TextEditingController activeCodeTextEditingController = TextEditingController();
   var email = '';
-  int userId = 0;
+  var userId = '';
 
   register() async {
     Map<String, dynamic> map = {

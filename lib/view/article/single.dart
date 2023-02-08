@@ -10,7 +10,7 @@ import 'package:tec/view/article/article_list_screen.dart';
 
 class Single extends StatelessWidget {
 
-  var singleArticleController = Get.find<SingleArticleController>();
+  SingleArticleController singleArticleController = Get.find<SingleArticleController>();
   final double sizeWith = Get.width;
   final double sizeHeight = Get.height;
 
